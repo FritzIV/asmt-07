@@ -166,15 +166,15 @@ class HolidayList:
 
 def main():
     # 1. Initialize HolidayList Object
-    hInit = HolidayList()
+    h = HolidayList()
 
     # 2. Load JSON file via HolidayList read_json function
-    hInit.read_json('holidays.json')
+    h.read_json('holidays.json')
 
     # 3. Scrape additional holidays using your HolidayList scrapeHolidays function.
-    hInit.scrapeHolidays()
+    h.scrapeHolidays()
 
-    h = copy.deepcopy(hInit) # use initial HolidayList to compare with h when users exit to see if they have made changes
+    saved = True # boolean to see is user has saved changes
 
     # 3. Create while loop for user to keep adding or working with the Calendar
     print('start_up') # turn into a variable for text pulled from config
@@ -213,6 +213,7 @@ def main():
                     goodInput = True
             holToAdd = Holiday(userHoliday, userDateF)
             h.addHoliday(holToAdd)
+            saved = False
 
         elif    action == '2':
             print('remove_a_holiday')
@@ -230,7 +231,7 @@ def main():
                 else:
                     goodInput = True
             h.removeHoliday(userHoliday, userDateF)
-
+            saved = False
         
         elif    action == '3':
             print('save_holiday_list')
@@ -245,6 +246,7 @@ def main():
                     print(f'{userSave} is not a valid input')
                 if userSave == 'y':
                     h.save_to_json('holiday_list.json')
+                    saved = True
                     print('Success: \nYour changes have been saved.')
                 else:
                     print('Canceled: \nHoliday list file save canceled')
@@ -269,7 +271,7 @@ def main():
         
         elif    action == '5':
             print("exit")
-            if hInit == h: # if no changes have been made
+            if saved: # if no changes have been made since last save
                 userExit = ''
                 goodInput = False
                 while not goodInput:
