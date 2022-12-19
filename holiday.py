@@ -2,13 +2,14 @@ from datetime import datetime,date
 import json
 from bs4 import BeautifulSoup
 import requests
-from dataclasses import dataclass, field
+import dataclasses
+from pydantic.dataclasses import dataclass
 import copy
 
 
 # -------------------------------------------
 # Modify the holiday class to 
-# 1. Only accept Datetime objects for date.
+# 1. Only accept Datetime objects for date -- pydantic dataclass enforces the type hints when creating a Holiday object
 # 2. You may need to add additional functions
 # 3. You may drop the init if you are using @dataclasses
 # --------------------------------------------
@@ -30,7 +31,7 @@ class Holiday:
 # --------------------------------------------
 @dataclass
 class HolidayList:
-    innerHolidays: list[Holiday] = field(default_factory=list)
+    innerHolidays: list[Holiday] = dataclasses.field(default_factory=list)
    
     def addHoliday(self, holidayObj, output = True):
         if isinstance(holidayObj, Holiday):
@@ -86,7 +87,7 @@ class HolidayList:
     def save_to_json(self, filelocation):
         holiday_dict = {"holidays":[{'name':hol.name, 'date':hol.date.strftime('%Y-%m-%d')} for hol in self.innerHolidays]}
         with open(filelocation, 'w') as f:
-            jsonHolidays = json.dump(holiday_dict, f, indent=4)
+            json.dump(holiday_dict, f, indent=4)
         # Write out json file to selected file.
         
     def scrapeHolidays(self):
@@ -161,6 +162,7 @@ class HolidayList:
         # Use your displayHolidaysInWeek function to display the holidays in the week
         # Ask user if they want to get the weather
         # If yes, use your getWeather function and display results
+
 
 def main():
     # 1. Initialize HolidayList Object
